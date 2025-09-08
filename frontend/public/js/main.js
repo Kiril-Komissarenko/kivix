@@ -1,4 +1,5 @@
-import * as THREE from "three";
+import * as THREE from "../node_modules/three";
+import { GLTFLoader } from "../node_modules/three/examples/jsm/loaders/GLTFLoader.js";
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -7,6 +8,31 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setAnimationLoop(animate);
 document.body.appendChild(renderer.domElement);
+
+const loader = new GLTFLoader();
+
+loader.load(
+  "/img/logo3.gltf",
+  function (glb) {
+    const model = glb.scene;
+
+    scene.add(model);
+  },
+  undefined,
+  function (error) {
+    console.log(error);
+  }
+);
+
+camera.position.z = 5;
+
+function animate() {
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+}
+animate();
